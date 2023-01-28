@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main extends JFrame implements ActionListener {
@@ -11,13 +12,19 @@ static JComboBox GunType;
 static JComboBox tiers;
 static JButton filter;
 static Connection conn;
+static JTextField opname;
 static Statement st;
 static ResultSet rs;
+static JTable jt;
+   static String [][]data;
+ static    String [] column;
+
 
     public static void main(String[] args) {
+
 	// write your code here
         try {
-             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;trustServerCertificate=true;","Ted2","m16isopaf");
+             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=SIEGE STUFF;trustServerCertificate=true;","Ted2","m16isopaf");
              st=conn.createStatement();
              rs=st.executeQuery("SELECT OPS.*,GUNS.name AS GunName FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id");
 
@@ -40,7 +47,12 @@ try{
         Main main = new Main();
         main.setLayout(null);
         main.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        main.setSize(800, 500);
+        main.setSize(1920, 1080);
+        opname=new JTextField();
+
+
+//        main.add(opname);
+                opname.setBounds(300,80,100,30);
         Side = new JComboBox();
         main.add(Side);
         main.add(tiers);
@@ -58,7 +70,17 @@ try{
         GunType.addItem("LMG");
         GunType.addItem("ALL");
         GunType.setSelectedItem("ALL");
+        column= new String[]{"id", "gender", "name", "side"," OP Tier", "Gun Name", "Gun Type", "Ammo","Gun rating"};
+        data=new String[][]{};
+        jt=new JTable(data,column);
 
+
+
+        jt.setBounds(200,160,700,500);
+        jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        JScrollPane sp=new JScrollPane(jt);
+        sp.setBounds(200,160,700,500);
+        main.add(sp);
         main.add(gender);
         main.add(GunType);
         gender.setBounds(250,50,100,30);
@@ -127,14 +149,25 @@ try{
                         query+="OPS.side= '"+Side.getSelectedItem()+"'";
                     }
                 rs=st.executeQuery(query);
-                while (rs.next()){
-                    System.out.print(rs.getString("name")+" "+rs.getString("GunName"));
+                ArrayList<String[]> AL=new ArrayList<String[]>();
+                    while (rs.next()){
+                        // "id", "gender", "name", "side"," OP Tier", "Gun Name", "Gun Type", "Ammo","Gun rating"
+                        String [] rowdata={rs.getString("id"),rs.getString("gender"),rs.getString("name"),rs.getString("side"),rs.getString("tier"),rs.getString("GunName"),rs.getString("type"),rs.getString("ammo"),rs.getString("rating")};
+//                        AL.add();
                     System.out.println();
                 }
+                    jt=new JTable(data,column);
+
                 } catch (Exception a) {
                     System.out.println(a);
                 }
+
+            try {
+                rs=st.executeQuery("Select * FROM OPS WHERE OPS.name='"+opname.getText()+"'");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
+        }
 
         }
     }
