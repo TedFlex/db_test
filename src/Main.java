@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -16,8 +18,10 @@ static JTextField opname;
 static Statement st;
 static ResultSet rs;
 static JTable jt;
-   static String [][]data;
- static    String [] column;
+static String [][]data;
+static    String [] column;
+static DefaultTableModel tableModel;
+
 
 
     public static void main(String[] args) {
@@ -72,7 +76,8 @@ try{
         GunType.setSelectedItem("ALL");
         column= new String[]{"id", "gender", "name", "side"," OP Tier", "Gun Name", "Gun Type", "Ammo","Gun rating"};
         data=new String[][]{};
-        jt=new JTable(data,column);
+        tableModel=new DefaultTableModel(column,0);
+        jt=new JTable(tableModel);
 
 
 
@@ -149,14 +154,14 @@ try{
                         query+="OPS.side= '"+Side.getSelectedItem()+"'";
                     }
                 rs=st.executeQuery(query);
-                ArrayList<String[]> AL=new ArrayList<String[]>();
+                    tableModel.setRowCount(0);
                     while (rs.next()){
-                        // "id", "gender", "name", "side"," OP Tier", "Gun Name", "Gun Type", "Ammo","Gun rating"
                         String [] rowdata={rs.getString("id"),rs.getString("gender"),rs.getString("name"),rs.getString("side"),rs.getString("tier"),rs.getString("GunName"),rs.getString("type"),rs.getString("ammo"),rs.getString("rating")};
-//                        AL.add();
-                    System.out.println();
+                        tableModel.addRow(rowdata);
+
                 }
-                    jt=new JTable(data,column);
+
+
 
                 } catch (Exception a) {
                     System.out.println(a);
