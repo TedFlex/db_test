@@ -9,10 +9,11 @@ static JButton jb;
         try {
             Connection conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;trustServerCertificate=true;","Ted2","m16isopaf");
             Statement st=conn.createStatement();
-            ResultSet rs=st.executeQuery("select * from GUNS");
+            ResultSet rs=st.executeQuery("SELECT OPS.*,GUNS.name AS GunName FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id");
             while (rs.next())
             {
-                System.out.print(rs.getString("name"));
+                System.out.print(rs.getString(4)+" "+rs.getString("GunName"));
+                System.out.println();
             }
         }catch (Exception e){
             System.out.println(e);
