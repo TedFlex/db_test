@@ -8,6 +8,7 @@ public class Main extends JFrame implements ActionListener {
 static JComboBox Side;
 static JComboBox gender;
 static JComboBox GunType;
+static JComboBox tiers;
 static JButton filter;
 static Connection conn;
 static Statement st;
@@ -25,13 +26,25 @@ static ResultSet rs;
             System.out.println(e);
         }
         gender=new JComboBox();
-
+        tiers =new JComboBox();
+try{
+    rs=st.executeQuery("SELECT DISTINCT OPS.tier  FROM OPS");
+    while (rs.next()){
+        tiers.addItem(rs.getString("tier"));
+    }
+    tiers.addItem("ALL");
+    tiers.setSelectedItem("ALL");
+} catch (Exception e) {
+    System.out.println(e);
+}
         Main main = new Main();
         main.setLayout(null);
         main.setDefaultCloseOperation(EXIT_ON_CLOSE);
         main.setSize(800, 500);
         Side = new JComboBox();
         main.add(Side);
+        main.add(tiers);
+        tiers.setBounds(550,50,100,30);
         Side.setBounds(100, 50, 100, 30);
         Side.addItem("ATTACKER");
         Side.addItem("DEFENDER");
@@ -57,15 +70,18 @@ static ResultSet rs;
         JLabel sidelabel=new JLabel("Side");
         JLabel genderlabel=new JLabel("Gender");
         JLabel guntypelabel=new JLabel("Guntype");
+        JLabel tierslabel=new JLabel("OP Tier");
         main.add(sidelabel);
         main.add(genderlabel);
         sidelabel.setBounds(100,20,70,30);
         genderlabel.setBounds(250,20,70,30);
         guntypelabel.setBounds(400,20,70,30);
+        tierslabel.setBounds(550,20,70,30);
         filter=new JButton("Filter");
         filter.addActionListener(main);
         main.add(filter);
         main.add(guntypelabel);
+        main.add(tierslabel);
         filter.setBounds(100,100,70,30);
 
         main.setVisible(true);
@@ -74,58 +90,52 @@ static ResultSet rs;
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == filter) {
-            if (gender.getSelectedItem().equals("FEMALE") && Side.getSelectedItem().equals("ATTACKER")) {
+            boolean flag=false;
                 try {
-                rs=st.executeQuery("SELECT OPS.*, GUNS.name AS GunName,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id WHERE OPS.side='ATTACKER' AND OPS.gender='FEMALE'");
+                    String query="SELECT OPS.*, GUNS.name AS GunName,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id";
+                    if (!GunType.getSelectedItem().equals("ALL")){
+
+                        if (!flag){query+=" WHERE ";}
+                        else {
+                            query+=" AND ";
+                        }
+                        flag=true;
+                        query+="GUNS.type= '"+GunType.getSelectedItem()+"'";
+                    }
+                    if (!tiers.getSelectedItem().equals("ALL")){
+                        if (!flag){query+=" WHERE ";}
+                        else {
+                            query+=" AND ";
+                        }
+                        flag=true;
+                        query+="OPS.tier= '"+tiers.getSelectedItem()+"'";
+                    }
+                    if (!gender.getSelectedItem().equals("ALL")){
+                        if (!flag){query+=" WHERE ";}
+                        else {
+                            query+=" AND ";
+                        }
+                        flag=true;
+                        query+="OPS.gender= '"+gender.getSelectedItem()+"'";
+                    }
+                    if (!Side.getSelectedItem().equals("ALL")){
+                        if (!flag){query+=" WHERE ";}
+                        else {
+                            query+=" AND ";
+                        }
+                        flag=true;
+                        query+="OPS.side= '"+Side.getSelectedItem()+"'";
+                    }
+                rs=st.executeQuery(query);
                 while (rs.next()){
-                    System.out.print(rs.getString("name"));
+                    System.out.print(rs.getString("name")+" "+rs.getString("GunName"));
                     System.out.println();
                 }
                 } catch (Exception a) {
                     System.out.println(a);
                 }
             }
-            else if (gender.getSelectedItem().equals("FEMALE")  && Side.getSelectedItem().equals("DEFENDER")){
-                try {
-                    rs=st.executeQuery("SELECT OPS.*, GUNS.name,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id WHERE OPS.side='DEFENDER' AND OPS.gender='FEMALE'");
-                    while (rs.next()){
-                        System.out.print(rs.getString("name")+" "+rs.getString("tier"));
-                        System.out.println();
-                    }
-                } catch (Exception a) {
-                    System.out.println(a);
-                }
-            }else if (gender.getSelectedItem().equals("ALL")  && Side.getSelectedItem().equals("ALL")){
-                try {
-                    rs=st.executeQuery("SELECT OPS.*, GUNS.name,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id");
-                    while (rs.next()){
-                        System.out.print(rs.getString("name"));
-                        System.out.println();
-                    }
-                } catch (Exception a) {
-                    System.out.println(a);
-                }
-            }else if (gender.getSelectedItem().equals("MALE")  && Side.getSelectedItem().equals("DEFENDER")){
-                try {
-                    rs=st.executeQuery("SELECT OPS.*, GUNS.name,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id WHERE OPS.side='DEFENDER' AND OPS.gender='MALE'");
-                    while (rs.next()){
-                        System.out.print(rs.getString("name")+" "+rs.getString("tier"));
-                        System.out.println();
-                    }
-                } catch (Exception a) {
-                    System.out.println(a);
-                }
-            }else if (gender.getSelectedItem().equals("MALE")  && Side.getSelectedItem().equals("ATTACKER")){
-                try {
-                    rs=st.executeQuery("SELECT OPS.*, GUNS.name,GUNS.type,GUNS.ammo,GUNS.rating FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id WHERE OPS.side='ATTACKER' AND OPS.gender='MALE'");
-                    while (rs.next()){
-                        System.out.print(rs.getString("name")+" "+rs.getString("tier"));
-                        System.out.println();
-                    }
-                } catch (Exception a) {
-                    System.out.println(a);
-                }
-            }
+
         }
     }
-}
+
