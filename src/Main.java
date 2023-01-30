@@ -29,7 +29,7 @@ static JButton Createop;
 
 	// write your code here
         try {
-             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=SIEGE STUFF;trustServerCertificate=true;","Ted2","m16isopaf");
+             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=new_siege;trustServerCertificate=true;","abcd","123456");
              st=conn.createStatement();
              rs=st.executeQuery("SELECT OPS.*,GUNS.name AS GunName FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id");
 

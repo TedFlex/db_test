@@ -14,7 +14,7 @@ Statement st;
     CreateOP(Connection conn, Statement st, ResultSet rs){
             this.st=st;
             this.setSize(1280,720);
-            this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//            this.setDefaultCloseOperation(EXIT_ON_CLOSE);
             this.setLayout(null);
             int x=100;
             fields=new JTextField[5];
@@ -70,7 +70,6 @@ Statement st;
                 }
             }
             query+=")";
-            System.out.println(query);
             try {
                 st.execute(query);
             }catch (Exception a){
