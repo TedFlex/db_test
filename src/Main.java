@@ -21,6 +21,7 @@ static JTable jt;
 static String [][]data;
 static    String [] column;
 static DefaultTableModel tableModel;
+static JButton Createop;
 
 
 
@@ -38,16 +39,18 @@ static DefaultTableModel tableModel;
         }
         gender=new JComboBox();
         tiers =new JComboBox();
-try{
-    rs=st.executeQuery("SELECT DISTINCT OPS.tier  FROM OPS");
-    while (rs.next()){
-        tiers.addItem(rs.getString("tier"));
-    }
-    tiers.addItem("ALL");
-    tiers.setSelectedItem("ALL");
-} catch (Exception e) {
-    System.out.println(e);
-}
+        try{
+            rs=st.executeQuery("SELECT DISTINCT OPS.tier  FROM OPS");
+            while (rs.next()){
+                tiers.addItem(rs.getString("tier"));
+            }
+            tiers.addItem("ALL");
+            tiers.setSelectedItem("ALL");
+        } catch (Exception e) {
+                System.out.println(e);
+        }
+
+
         Main main = new Main();
         main.setLayout(null);
         main.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -56,7 +59,7 @@ try{
 
 
 //        main.add(opname);
-                opname.setBounds(300,80,100,30);
+        opname.setBounds(300,80,100,30);
         Side = new JComboBox();
         main.add(Side);
         main.add(tiers);
@@ -78,8 +81,10 @@ try{
         data=new String[][]{};
         tableModel=new DefaultTableModel(column,0);
         jt=new JTable(tableModel);
-
-
+        Createop=new JButton("Create Operator");
+        Createop.setBounds(300,100,150,30);
+        Createop.addActionListener(main);
+        main.add(Createop);
 
         jt.setBounds(200,160,700,500);
         jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -153,13 +158,13 @@ try{
                         flag=true;
                         query+="OPS.side= '"+Side.getSelectedItem()+"'";
                     }
-                rs=st.executeQuery(query);
+                    rs=st.executeQuery(query);
                     tableModel.setRowCount(0);
                     while (rs.next()){
                         String [] rowdata={rs.getString("id"),rs.getString("gender"),rs.getString("name"),rs.getString("side"),rs.getString("tier"),rs.getString("GunName"),rs.getString("type"),rs.getString("ammo"),rs.getString("rating")};
                         tableModel.addRow(rowdata);
 
-                }
+                    }
 
 
 
@@ -172,6 +177,9 @@ try{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+        }
+        else if (e.getSource()==Createop){
+            new CreateOP(conn,st,rs);
         }
 
         }
