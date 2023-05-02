@@ -22,6 +22,7 @@ static String [][]data;
 static    String [] column;
 static DefaultTableModel tableModel;
 static JButton Createop;
+static JButton Creategun;
 
 
 
@@ -29,7 +30,7 @@ static JButton Createop;
 
 	// write your code here
         try {
-             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=SIEGE STUFF;trustServerCertificate=true;","Ted2","m16isopaf");
+             conn=DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=true;databaseName=new_siege;trustServerCertificate=true;","Ted2","m16isopaf");
              st=conn.createStatement();
              rs=st.executeQuery("SELECT OPS.*,GUNS.name AS GunName FROM OPS JOIN GUNS ON OPS.gunid=GUNS.id");
 
@@ -65,16 +66,16 @@ static JButton Createop;
         main.add(tiers);
         tiers.setBounds(550,50,100,30);
         Side.setBounds(100, 50, 100, 30);
-        Side.addItem("ATTACKER");
-        Side.addItem("DEFENDER");
+        Side.addItem("ATTACK");
+        Side.addItem("DEFENSE");
         Side.addItem("ALL");
         Side.setSelectedItem("ALL");
         GunType=new JComboBox();
-        GunType.addItem("AR");
-        GunType.addItem("DMR");
-        GunType.addItem("SLUG");
-        GunType.addItem("SMG");
-        GunType.addItem("LMG");
+        GunType.addItem("Assault Rifle");
+        GunType.addItem("marksman Rifle");
+        GunType.addItem("Shotgun");
+        GunType.addItem("Submachine Gun");
+        GunType.addItem("Light Machine Gun");
         GunType.addItem("ALL");
         GunType.setSelectedItem("ALL");
         column= new String[]{"id", "gender", "name", "side"," OP Tier", "Gun Name", "Gun Type", "Ammo","Gun rating"};
@@ -84,11 +85,26 @@ static JButton Createop;
         Createop=new JButton("Create Operator");
         Createop.setBounds(300,100,150,30);
         Createop.addActionListener(main);
+        Creategun=new JButton("Create Gun");
+        Creategun.setBounds(450,100,150,30);
+        Creategun.addActionListener(main);
+        main.add(Creategun);
         main.add(Createop);
 
         jt.setBounds(200,160,700,500);
         jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         JScrollPane sp=new JScrollPane(jt);
+        jt.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = jt.rowAtPoint(evt.getPoint());
+                int col = jt.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col >= 0) {
+                    System.out.println(tableModel.getValueAt(row,0));
+
+                }
+            }
+        });
         sp.setBounds(200,160,700,500);
         main.add(sp);
         main.add(gender);
@@ -180,6 +196,9 @@ static JButton Createop;
         }
         else if (e.getSource()==Createop){
             new CreateOP(conn,st,rs);
+        }
+        else if(e.getSource()==Creategun){
+            new CreateGUN(conn,st,rs);
         }
 
         }

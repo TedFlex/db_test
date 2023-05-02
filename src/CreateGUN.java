@@ -5,20 +5,20 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class CreateOP extends JFrame implements ActionListener {
+public class CreateGUN extends JFrame implements ActionListener {
     JTextField [] fields;
     JLabel [] labels;
     JButton submit;
-Statement st;
+    Statement st;
 
-    CreateOP(Connection conn, Statement st, ResultSet rs){
-            this.st=st;
-            this.setSize(1280,720);
-            this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            this.setLayout(null);
-            int x=100;
-            fields=new JTextField[5];
-            labels=new JLabel[5];
+    CreateGUN(Connection conn, Statement st, ResultSet rs){
+        this.st=st;
+        this.setSize(1280,720);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.setLayout(null);
+        int x=100;
+        fields=new JTextField[5];
+        labels=new JLabel[5];
         for (int i = 0; i < 5; i++) {
             labels[i]=new JLabel();
             fields[i]=new JTextField();
@@ -28,11 +28,11 @@ Statement st;
             this.add(fields[i]);
 
         }
-        labels[0].setText("Gender");
+        labels[0].setText("id");
         labels[1].setText("Name");
-        labels[2].setText("Side");
-        labels[3].setText("gunid");
-        labels[4].setText("tier");
+        labels[2].setText("type");
+        labels[3].setText("ammo");
+        labels[4].setText("rating");
         for (int i = 0; i < 5; i++) {
             this.add(labels[i]);
         }
@@ -51,16 +51,16 @@ Statement st;
                 rowdata[i]=fields[i].getText();
             }
 
-            String query="INSERT INTO OPS(gender,name,side,gunid,tier) VALUES (";
+            String query="INSERT INTO GUNS(id,name,type,ammo,rating) VALUES (";
             for (int i = 0; i < 5; i++) {
                 if (i!=3){
-                     if (i==4){
-                         query+="'"+rowdata[i]+"'";
+                    if (i==4){
+                        query+="'"+rowdata[i]+"'";
                     }else {
-                         query+="'"+rowdata[i]+"',";
-                     }
+                        query+="'"+rowdata[i]+"',";
+                    }
 
-            }else {
+                }else {
                     query+=rowdata[i]+",";
                 }
             }
