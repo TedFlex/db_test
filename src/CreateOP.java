@@ -17,9 +17,9 @@ Statement st;
             this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             this.setLayout(null);
             int x=100;
-            fields=new JTextField[5];
-            labels=new JLabel[5];
-        for (int i = 0; i < 5; i++) {
+            fields=new JTextField[6];
+            labels=new JLabel[6];
+        for (int i = 0; i < 6; i++) {
             labels[i]=new JLabel();
             fields[i]=new JTextField();
             fields[i].setBounds(x,60,90,30);
@@ -28,12 +28,13 @@ Statement st;
             this.add(fields[i]);
 
         }
-        labels[0].setText("Gender");
-        labels[1].setText("Name");
-        labels[2].setText("Side");
-        labels[3].setText("gunid");
-        labels[4].setText("tier");
-        for (int i = 0; i < 5; i++) {
+        labels[0].setText("id");
+        labels[1].setText("Gender");
+        labels[2].setText("Name");
+        labels[3].setText("side");
+        labels[4].setText("gunid");
+        labels[5].setText("tier");
+        for (int i = 0; i < 6; i++) {
             this.add(labels[i]);
         }
         submit=new JButton("Create");
@@ -45,25 +46,32 @@ Statement st;
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if (e.getSource()==submit){
-            String[]rowdata=new String[5];
-            for (int i = 0; i < 5; i++) {
+            try {
+                st.execute("SET IDENTITY_INSERT OPS ON;");
+            }catch (Exception a){
+                System.out.println(a);
+            }
+            String[]rowdata=new String[6];
+            for (int i = 0; i < 6; i++) {
                 rowdata[i]=fields[i].getText();
             }
 
-            String query="INSERT INTO OPS(gender,name,side,gunid,tier) VALUES (";
-            for (int i = 0; i < 5; i++) {
-                if (i!=3){
-                     if (i==4){
+            String query="INSERT INTO OPS(id,Gender,Name,side,gunid,tier) VALUES (";
+            for (int i = 0; i < 6; i++) {
+
+                    if (i==0 || i==4){
+                        query+=rowdata[i]+",";
+                    }
+                  else   if (i==5){
                          query+="'"+rowdata[i]+"'";
                     }else {
                          query+="'"+rowdata[i]+"',";
                      }
 
-            }else {
-                    query+=rowdata[i]+",";
-                }
             }
+
             query+=")";
             System.out.println(query);
             try {
