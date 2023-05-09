@@ -24,6 +24,7 @@ static DefaultTableModel tableModel;
 static JButton Createop;
 static JButton Creategun;
 static JButton Deletegun;
+static JButton Updateop;
 
 
 
@@ -93,9 +94,13 @@ static JButton Deletegun;
         Deletegun=new JButton("Delete Gun");
         Deletegun.setBounds(600,100,150,30);
         Deletegun.addActionListener(main);
+        Updateop=new JButton("Update OP");
+        Updateop.setBounds(750,100,150,30);
+        Updateop.addActionListener(main);
         main.add(Creategun);
         main.add(Createop);
         main.add(Deletegun);
+        main.add(Updateop);
 
         jt.setBounds(200,160,700,500);
         jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -208,8 +213,9 @@ static JButton Deletegun;
         }
         else if(e.getSource()==Deletegun){
             new Deletinggun(conn,st,rs);
-
-
+        }
+        else if(e.getSource()==Updateop){
+            new UPDATEOP(conn,st,rs);
         }
 
         }
